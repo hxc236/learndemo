@@ -55,5 +55,25 @@ git pull
 
 
 
+#### 导航栏
+
+两种实现方式：
+
+第一种：
+
+<img src="https://pic.imgdb.cn/item/63dbe396ac6ef8601656d3b1.png" alt="script" style="zoom:50%;" />
+
+<img src="https://pic.imgdb.cn/item/63dbe3a3ac6ef8601656e378.png" alt="template" style="zoom:67%;" />
+
+第二种：
+
+<img src="https://pic.imgdb.cn/item/63dbe3d5ac6ef86016572e76.png" alt="第二种,template" style="zoom:80%;" />
+
+
+
+
+
+
+
 ## 后端相关
 
