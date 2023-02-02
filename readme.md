@@ -1,7 +1,7 @@
 # A Lengendary Project
 
  ## git bash 操作
- 
+
  配置ssh秘钥
  ```
  cd   //先转至家目录
@@ -9,9 +9,9 @@
  ls .ssh/
  cat id_rsa.pub  //查看，复制到ssh秘钥
  ```
- 
+
  创建项目：
- 
+
  ```
  git init       //初始化仓库
  vim readme.md  //或 创建readme.md文件
@@ -21,7 +21,7 @@
  git remote add origin 仓库网址   
  git push -u origin master
  ```
- 
+
 克隆仓库
  ```
  通过ssh克隆(fork)，将链接复制下来
@@ -42,3 +42,18 @@ git push
 ```
 git pull
 ```
+
+
+
+## 前端相关（vue）
+
+### web端
+
+插件: router, vuex
+
+依赖: jquery, boostrap
+
+
+
+## 后端相关
+
