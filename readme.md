@@ -61,16 +61,52 @@ git pull
 
 第一种：
 
-<img src="https://pic.imgdb.cn/item/63dbe396ac6ef8601656d3b1.png" alt="script" style="zoom:50%;" />
+```vue
+<template>
+ ......
+ <li class="nav-item">
+   <router-link :class="route_name == 'pk_index' ? 'nav-link active' : 'nav-link'" :to="{name: 'pk_index'}">对战</router-link>
+ </li>
+ ......
+</template>
 
-<img src="https://pic.imgdb.cn/item/63dbe3a3ac6ef8601656e378.png" alt="template" style="zoom:67%;" />
+<script>
+import { useRoute } from 'vue-router'
+import { computed } from 'vue'
+
+export default {
+    setup() {
+        const route = useRoute();
+        let route_name = computed(() => route.name)
+        return {
+            route_name
+        }
+    }
+}
+</script>
+
+<style scoped>
+</style>
+```
 
 第二种：
+```vue
+<template>
+ ......
+ <li class="nav-item">
+   <router-link class="nav-link" active-class="active" aria-current="page" :to="{name: 'pk_index'}">匹配对战</router-link>
+ </li>
+ ......
+</template>
+......
+```
+#### 经验杂谈
 
-<img src="https://pic.imgdb.cn/item/63dbe3d5ac6ef86016572e76.png" alt="第二种,template" style="zoom:80%;" />
-
-
-
+```
+关于js的import：
+当export default时，import的类不需要加括号{}；
+否则要加括号{}
+```
 
 
 
