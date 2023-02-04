@@ -45,7 +45,7 @@ const step = timestamp => {     //timestamp 表示当前函数执行的时刻
             obj.update();
         }
     }
-
+    last_timestamp = timestamp;
     requestAnimationFrame(step)     //在下一帧渲染前执行step函数
 }
 
