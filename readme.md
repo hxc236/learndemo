@@ -113,3 +113,27 @@ export default {
 
 ## 后端相关
 
+
+### mySQL数据库 (8.0版本)
+
+mysql服务关闭： `net stop mysql80`
+
+mysql服务启动: `net start mysql80`
+
+常用操作:
+```sql
+mysql -uroot -p
+输入密码
+//进入了mysql命令行
+show databases; //显示多少个数据库
+create database <dbname>; //创建数据库
+drop database <dbname>;   //删除数据库
+use <dbname>;  //使用某个数据库
+show tables;  //使用某个数据库时，展示所有表
+create table user(id int, username varchar(100), password varchar(100)); //创建表
+drop table user; //删除表
+insert into user values(1, 'hxc', '123123'); //插入数据
+select * from user; //查询数据
+select * from user where id=1; //查询符合条件的数据
+delete from user where id=1; //删除符合条件的数据
+```
