@@ -100,13 +100,6 @@ export default {
 </template>
 ......
 ```
-#### 经验杂谈
-
-```
-关于js的import：
-当export default时，import的类不需要加括号{}；
-否则要加括号{}
-```
 
 
 
@@ -137,3 +130,25 @@ select * from user; //查询数据
 select * from user where id=1; //查询符合条件的数据
 delete from user where id=1; //删除符合条件的数据
 ```
+
+
+## 后传
+
+### 经验杂谈
+
+#### 前端小tip? (maybe，待证明
+```
+关于js的import：
+当export default时，import的类不需要加括号{}；
+否则要加括号{}
+```
+
+#### 关于前端vue我把class写成calss找了1小时bug心态爆炸这件事
+
+过程不想再经历了。。。真的是，小小的错误会导致怪怪的bug，当出现了一些奇怪的事情时，一般并不是关键代码出了问题，果然前进的过程是曲折的。。。
+
+#### 关于后端我找了1个小时bug结果是注解@RestController写成了@Controller这件事
+
+太痛了。。。。。。。。。。。。。通过前端setup和postman一起测试post类型请求，403和500我都能接受，怎么会404呢？？没想到啊，我是傻比我是傻比...
+
+**所以说啊同志们，一定要记清楚注解啊，不要想当然就写了！！**
