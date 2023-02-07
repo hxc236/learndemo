@@ -1,5 +1,5 @@
 <template>
-    <ContentField>对局列表</ContentField>
+    <ContentField>注册</ContentField>
 </template>
 
 <script>
