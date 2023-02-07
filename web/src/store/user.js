@@ -19,6 +19,13 @@ export default {
         },
         updateToken(state, token) {
             state.token = token;
+        },
+        logout(state) {
+            state.id = "";
+            state.username = "";
+            state.photo = "";
+            state.token = "";
+            state.is_login = false;
         }
     },
     actions: {  // 修改state的函数一般写在actions里
@@ -65,6 +72,9 @@ export default {
                     console.log(resp);
                 }
             });
+        },
+        logout(context) {
+            context.commit("logout");
         }
     },
     modules: {
