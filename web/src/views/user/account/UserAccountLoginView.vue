@@ -1,5 +1,5 @@
 <template>
-    <ContentField>
+    <ContentField v-if="!$store.state.user.pulling_info">
         <div class="row justify-content-md-center">
             <div class="col-3">
                 <form @submit.prevent="login"> <!--@submit.prevent="login"把提交和login绑定起来，并阻止掉默认行为-->
@@ -10,7 +10,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">密码</label>
-                        <input v-model="password" type="password" class="form-control" id="username"
+                        <input v-model="password" type="password" class="form-control" id="password"
                             placeholder="请输入密码">
                     </div>
                     <div class="error-message"> {{ error_message }} </div>
@@ -37,6 +37,22 @@ export default {
         let username = ref("");
         let password = ref("");
         let error_message = ref("");
+
+        const jwt_token = localStorage.getItem("jwt_token");
+        if(jwt_token) {
+            store.commit("updateToken", jwt_token);
+            store.dispatch("getInfo", {
+                success() {
+                    router.push({name:"home"});
+                    store.commit("updatePullingInfo", false);
+                },
+                error() {
+                    store.commit("updatePullingInfo", false);
+                }
+            })
+        } else {
+            store.commit("updatePullingInfo", false);
+        }
 
         const login = () => {
             error_message.value = "";
