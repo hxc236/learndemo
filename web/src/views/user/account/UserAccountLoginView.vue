@@ -33,17 +33,25 @@ export default {
         ContentField
     },
     setup() {
+        if (localStorage.getItem("current_page") === null)
+            localStorage.setItem("current_page", "user_account_login");
+
         const store = useStore();
         let username = ref("");
         let password = ref("");
         let error_message = ref("");
+        const current_page = localStorage.getItem("current_page");
 
+        //jwt授权验证
         const jwt_token = localStorage.getItem("jwt_token");
-        if(jwt_token) {
+        if (jwt_token) {
             store.commit("updateToken", jwt_token);
             store.dispatch("getInfo", {
                 success() {
-                    router.push({name:"home"});
+                    if (current_page === "user_account_login") {
+                        store.commit("updateCurrentPage", "home");
+                    }
+                    router.push({ name: current_page });
                     store.commit("updatePullingInfo", false);
                 },
                 error() {

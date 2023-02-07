@@ -30,7 +30,7 @@ export default {
         },
         updatePullingInfo(state, pulling_info) {
             state.pulling_info = pulling_info;
-        }
+        },
     },
     actions: {  // 异步操作只能放在actions里，修改state的函数一般写在actions里
         login(context, data) {      // data为dispatch时传的JSON
@@ -80,6 +80,7 @@ export default {
         },
         logout(context) {
             localStorage.removeItem("jwt_token");
+            localStorage.removeItem("current_page");
             context.commit("logout");
             location.reload();
         }
