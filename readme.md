@@ -43,6 +43,10 @@ git push
 git pull
 ```
 
+代码量统计
+```
+find -name '*.java' | xargs cat | wc -l
+```
 
 
 ## 前端相关（vue）
