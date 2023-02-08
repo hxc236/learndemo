@@ -4,6 +4,7 @@ import com.lendemo.backend.pojo.User;
 import com.lendemo.backend.service.impl.utils.UserDetailsImpl;
 import com.lendemo.backend.service.user.account.LoginService;
 import com.lendemo.backend.utils.JwtUtil;
+import com.lendemo.backend.utils.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,9 +25,10 @@ public class LoginServiceImpl implements LoginService {
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(username, password);
 
-        Authentication authenticate = authenticationManager.authenticate(authenticationToken);  // 登录失败，自动抛出异常
+        Authentication authenticate = authenticationManager.authenticate(authenticationToken);  // 登录失败，会自动处理
         UserDetailsImpl loginUser = (UserDetailsImpl) authenticate.getPrincipal();
         User user = loginUser.getUser();
+
         String jwt = JwtUtil.createJWT(user.getId().toString());
 
         Map<String, String> map = new HashMap<>();
