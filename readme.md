@@ -41,12 +41,15 @@ git push
 下载（在目标文件下）
 ```
 git pull
+在github修改过文件时，将远程仓库与本地仓库同步：
+git pull --rebase origin master
 ```
 
 代码量统计
 ```
 find -name '*.java' | xargs cat | wc -l
 ```
+
 
 
 ## 前端相关（vue）

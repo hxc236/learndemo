@@ -45,7 +45,7 @@ public class AddServiceImpl implements AddService {
             return map;
         }
 
-        if(description == null) {
+        if(description == null || description.length() == 0) {
             description = "这个用户很懒，什么也没有写~";
         }
 
