@@ -41,10 +41,10 @@ export default {
                         username: data.opponent_username,
                         photo: data.opponent_photo,
                     });
-                    store.commit("updateGamemap", data.gamemap);
+                    store.commit("updateGame", data.game);
                     setTimeout(() => {
                         store.commit("updateStatus", "playing");
-                    }, 2000);
+                    }, 200);
                     
                 }
             }
