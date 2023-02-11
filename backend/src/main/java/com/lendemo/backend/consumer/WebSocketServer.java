@@ -1,6 +1,7 @@
 package com.lendemo.backend.consumer;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.lendemo.backend.consumer.utils.Game;
 import com.lendemo.backend.consumer.utils.JwtAuthentication;
 import com.lendemo.backend.mapper.UserMapper;
 import com.lendemo.backend.pojo.User;
@@ -11,6 +12,7 @@ import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -68,7 +70,32 @@ public class WebSocketServer {
         System.out.println("startMatching!");
         matchPool.add(this.user);
 
-        //01:15:24
+        // 开始匹配
+        while(matchPool.size() >= 2) {
+            Iterator<User> iterator = matchPool.iterator();
+            User player1 = iterator.next(), player2 =  iterator.next();
+            matchPool.remove(player1);
+            matchPool.remove(player2);
+
+            Game game = new Game(13, 14, 20);
+            game.createMap();
+
+            JSONObject resp1 = new JSONObject();
+            resp1.put("event", "start_matching");
+            resp1.put("opponent_username", player2.getUsername());
+            resp1.put("opponent_photo", player2.getPhoto());
+            resp1.put("gamemap", game.getGameMap());
+            users.get(player1.getId()).sendMessage(resp1.toJSONString());
+
+            JSONObject resp2 = new JSONObject();
+            resp2.put("event", "start_matching");
+            resp2.put("opponent_username", player1.getUsername());
+            resp2.put("opponent_photo", player1.getPhoto());
+            resp2.put("gamemap", game.getGameMap());
+            users.get(player2.getId()).sendMessage(resp2.toJSONString());
+
+
+        }
     }
 
     private void stopMatching() {

@@ -31,15 +31,27 @@ export default {
 
             socket.onopen = () => {
                 console.log("connected!");
+                store.commit("updateSocket", socket);
             };
 
-            socket.onmessage = (msg) => {
+            socket.onmessage = (msg) => {   // 从后端接受信息
                 const data = JSON.parse(msg.data);
-                console.log(data);
+                if(data.event === "start_matching") {   //匹配成功
+                    store.commit("updateOpponent", {
+                        username: data.opponent_username,
+                        photo: data.opponent_photo,
+                    });
+                    store.commit("updateGamemap", data.gamemap);
+                    setTimeout(() => {
+                        store.commit("updateStatus", "playing");
+                    }, 2000);
+                    
+                }
             }
             
             socket.onclose = () => {
                 console.log("disconnected!");
+                store.commit("updateStatus", "matching");
             }
         });
 

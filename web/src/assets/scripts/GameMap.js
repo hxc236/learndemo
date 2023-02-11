@@ -4,15 +4,16 @@ import { Wall } from "./Wall";
 
 
 export class GameMap extends AcGameObject {
-    constructor(ctx, parent) {  //ctx: 画布;  parent: 父元素 
+    constructor(ctx, parent, store) {  //ctx: 画布;  parent: 父元素 
         super();
 
         this.ctx = ctx;
         this.parent = parent;
+        this.store = store;
         this.L = 0;         //地图格子中，一个格子是一个单位乘一个单位，L是一个单位的长度
 
-        this.rows = 13;
-        this.cols = 14;
+        this.rows = store.state.pk.gamemap.length;
+        this.cols = store.state.pk.gamemap[0].length;
 
         this.inner_walls_count = 20;
         this.walls = [];
@@ -23,57 +24,8 @@ export class GameMap extends AcGameObject {
         ];
     }
 
-    // flood_fill
-    check_connectivity(g, sx, sy, tx, ty) {
-        if(sx === tx && sy === ty) return true;
-        g[sx][sy] = true;
-
-        let dx = [1, 0, -1, 0], dy = [0, 1, 0, -1];
-        for(let i = 0; i < 4; i ++ )
-        {
-            let x = sx + dx[i], y = sy + dy[i];
-            if(!g[x][y])
-                return this.check_connectivity(g, x, y, tx, ty); 
-        }
-        return false;
-    }
-
     create_walls() {
-        const g = [];
-        // 初始化，g[r][c] = true表示(r, c)有障碍物
-        for(let r = 0; r < this.rows; r ++ ) {
-            g[r] = [];
-            for(let c = 0; c < this.cols; c ++ ) {
-                g[r][c] = false;
-            }
-        }
-
-        // 给四周加上障碍物
-        for(let r = 0; r < this.rows; r ++ ) {
-            g[r][0] = g[r][this.cols - 1] = true;
-        }
-
-        for(let c = 0; c < this.cols; c ++ ) {
-            g[0][c] = g[this.rows - 1][c] = true;
-        }
-
-        // 创建随机障碍物
-        for(let i = 0; i < this.inner_walls_count / 2; i ++ ) {
-            for(let j = 0; j < 1000; j ++ ) {
-                let r = parseInt(Math.random() * this.rows);     //生成[0, this.rows - 1]中的一个随机整数
-                let c = parseInt(Math.random() * this.cols);
-                if(g[r][c] || g[this.rows - 1 - r][this.cols - 1 - c]) continue;
-                //保证左下角和右上角不会被填充
-                if(r === this.rows - 2 && c === 1 || r === 1 && c === this.cols - 2) continue;
-                
-                g[r][c] = g[this.rows - 1 - r][this.cols - 1 - c] = true;
-                break;
-            }
-        }
-
-        // 判断连通性
-        const copy_g = JSON.parse(JSON.stringify(g))    //复制g[]数组，先转成JSON再解析出来
-        if(!this.check_connectivity(copy_g, this.rows - 2, 1, 1, this.cols - 2)) return false;
+        const g = this.store.state.pk.gamemap;
 
         // 绘制墙
         for(let r = 0; r < this.rows; r ++ ) {
