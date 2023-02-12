@@ -83,7 +83,7 @@ public class WebSocketServer {
 
             users.get(playerA.getId()).game = game;
             users.get(playerB.getId()).game = game;
-            game.start();       // 多线程的开始start函数，封装在Thread中
+            game.start();       // 另起一个线程执行game，start函数封装在线程的基类Thread中
 
             // 将地图信息打包成JSON传到Client端
             JSONObject respGame = new JSONObject();
@@ -118,6 +118,14 @@ public class WebSocketServer {
         matchPool.remove(this.user);
     }
 
+    private void move(int direction) {
+        if(game.getPlayerA().getId().equals(user.getId())) {   // 判断是哪名玩家
+            game.setNextStepA(direction);
+        } else if(game.getPlayerB().getId().equals(user.getId())) {
+            game.setNextStepB(direction);
+        }
+    }
+
     @OnMessage
     public void onMessage(String message, Session session) {    // 当做路由
         // 从Client接受信息
@@ -126,8 +134,10 @@ public class WebSocketServer {
         String event = data.getString("event");
         if("start_matching".equals(event)) {
             startMatching();
-        } else {
+        } else if("stop_matching".equals(event)) {
             stopMatching();
+        } else if("move".equals(event)) {
+            move(data.getInteger("direction"));
         }
     }
 

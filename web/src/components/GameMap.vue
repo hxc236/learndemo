@@ -17,7 +17,10 @@ export default {
 
 
         onMounted(() => {   //当组件加载完之后需要执行哪些操作
-            new GameMap(canvas.value.getContext('2d'), parent.value, store) 
+            store.commit(
+                "updateGameObject", 
+                new GameMap(canvas.value.getContext('2d'), parent.value, store) 
+            );
         });
 
         return {

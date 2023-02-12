@@ -131,10 +131,10 @@ public class Game extends Thread {  // 有多个Client端时会有多局游戏�
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        for(int i = 0; i < TIMELIMIT / 1000; i ++ )
+        for(int i = 0; i < TIMELIMIT / 500; i ++ )
         {
             try {
-                Thread.sleep(1000);
+                Thread.sleep(500);
                 lock.lock();
                 try {
                     if(nextStepA != null && nextStepB != null) {
