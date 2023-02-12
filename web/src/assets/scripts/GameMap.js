@@ -19,8 +19,8 @@ export class GameMap extends AcGameObject {
         this.walls = [];
 
         this.snakes = [
-            new Snake({id: 0, color: "#4876eb", r: this.rows - 2, c: 1}, this),
-            new Snake({id: 1, color: "#f94847", r: 1, c: this.cols - 2}, this),
+            new Snake({ id: 0, color: "#4876eb", r: this.rows - 2, c: 1 }, this),
+            new Snake({ id: 1, color: "#f94847", r: 1, c: this.cols - 2 }, this),
         ];
     }
 
@@ -28,9 +28,9 @@ export class GameMap extends AcGameObject {
         const g = this.store.state.pk.gamemap;
 
         // 绘制墙
-        for(let r = 0; r < this.rows; r ++ ) {
-            for(let c = 0; c < this.cols; c ++ ) {
-                if(g[r][c]) {
+        for (let r = 0; r < this.rows; r++) {
+            for (let c = 0; c < this.cols; c++) {
+                if (g[r][c]) {
                     this.walls.push(new Wall(r, c, this));
                 }
             }
@@ -43,23 +43,23 @@ export class GameMap extends AcGameObject {
 
         this.ctx.canvas.addEventListener("keydown", e => {  //绑定一个keydown事件
             let d = -1;     // 前端发送移动信息
-            if(e.key === 'w') d = 0;
-            else if(e.key === 'd') d = 1;
-            else if(e.key === 's') d = 2;
-            else if(e.key === 'a') d = 3;
-            
-            if ( d >= 0) {
+            if (e.key === 'w') d = 0;
+            else if (e.key === 'd') d = 1;
+            else if (e.key === 's') d = 2;
+            else if (e.key === 'a') d = 3;
+
+            if (d >= 0) {
                 this.store.state.pk.socket.send(JSON.stringify({
                     event: "move",
                     direction: d,
-                }))
+                }));
             }
         });
     }
 
     start() {
-        for(let i = 0; i < 1000; i ++ )
-            if(this.create_walls()) break;
+        for (let i = 0; i < 1000; i++)
+            if (this.create_walls()) break;
 
         this.add_listening_events();
     }
@@ -68,45 +68,27 @@ export class GameMap extends AcGameObject {
         this.L = parseInt(Math.min(this.parent.clientWidth / this.cols, this.parent.clientHeight / this.rows))  //转为整型，使得方块之间无缝连接
         this.ctx.canvas.width = this.L * this.cols;
         this.ctx.canvas.height = this.L * this.rows;
-        
+
     }
 
     check_ready() {
-        for(const snake of this.snakes) {
-            if(snake.status !== "idle") return false;
-            if(snake.direction === -1) return false;
+        for (const snake of this.snakes) {
+            if (snake.status !== "idle") return false;
+            if (snake.direction === -1) return false;
         }
         return true;
     }
 
     next_step() {   //让两条蛇进入下一回合
-        for(const snake of this.snakes) {
+        for (const snake of this.snakes) {
             snake.next_step();
         }
     }
 
-    check_valid(cell) { // 检测目标位置是否合法: 没有撞到两条蛇的身体以及障碍物
-        for(const wall of this.walls) {
-            if(wall.r === cell.r && wall.c === cell.c) 
-                return false;
-        }
-        
-        for(const snake of this.snakes) {
-            let k = snake.cells.length;
-            if(!snake.check_tail_increasing()) {    //蛇尾会前进，不需要判断
-                k -- ;
-            }
-            for(let i = 0; i < k; i ++ ) {
-                if(snake.cells[i].r === cell.r && snake.cells[i].c === cell.c)
-                    return false;
-            }
-        }
-        return true;
-    }
 
     update() {
         this.update_size();
-        if(this.check_ready()) {
+        if (this.check_ready()) {
             this.next_step();
         }
         this.render();
@@ -116,16 +98,16 @@ export class GameMap extends AcGameObject {
         // console.log(this.ctx);
         const color_even = "#aad751";
         const color_odd = "#a2d048";
-        for (let r = 0; r < this.rows; r ++ )
-            for (let c = 0; c < this.cols; c ++ ) {
+        for (let r = 0; r < this.rows; r++)
+            for (let c = 0; c < this.cols; c++) {
                 if ((r + c) % 2 === 0) {
                     this.ctx.fillStyle = color_even;
                 } else {
                     this.ctx.fillStyle = color_odd;
                 }
                 //canvas的坐标系中，横坐标为x向右，纵坐标为y向下，因此(r,c)对应到canvas中为(cL,rL)
-                this.ctx.fillRect(c * this.L, r * this.L, this.L, this.L);  
+                this.ctx.fillRect(c * this.L, r * this.L, this.L, this.L);
             }
-                
+
     }
 } 

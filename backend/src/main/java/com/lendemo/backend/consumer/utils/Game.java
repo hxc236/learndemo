@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.lendemo.backend.consumer.WebSocketServer;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -127,14 +128,14 @@ public class Game extends Thread {  // 有多个Client端时会有多局游戏�
 
     private boolean nextStep() {    // 等待两名玩家的下一步操作
         try {
-            Thread.sleep(drawTime);     // 在前端绘制一格的200ms内，防止接受过多的输入
+            Thread.sleep(200);     // 在前端绘制一格的200ms内，防止接受过多的输入
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        for(int i = 0; i < TIMELIMIT / 500; i ++ )
+        for(int i = 0; i < 50; i ++ )
         {
             try {
-                Thread.sleep(500);
+                Thread.sleep(200);
                 lock.lock();
                 try {
                     if(nextStepA != null && nextStepB != null) {
@@ -161,11 +162,51 @@ public class Game extends Thread {  // 有多个Client端时会有多局游戏�
         JSONObject resp = new JSONObject();
         resp.put("event", "result");
         resp.put("loser", loser);
+//        lock.lock();
+//        try {
+//            resp.put("a_direction", nextStepA);
+//            resp.put("b_direction", nextStepB);
+//            nextStepA = nextStepB = null;
+//        } finally {
+//            lock.unlock();
+//        }
         sendAllMessage(resp.toJSONString());
     }
 
-    private void judge() {  // 判断两名玩家下一步操作是否合法
+    private boolean check_valid(List<Cell> cellsA, List<Cell> cellsB) {     // 前者玩家（A）最后一步是否非法
+        int n = cellsA.size();
+        Cell cell = cellsA.get(n - 1);      // 最后一步走到的格子
+        if(gameMap[cell.getX()][cell.getY()] == 1) {
+            return false;
+        }
+        for(int i = 0; i < n - 1; i ++ ) {
+            if(cellsA.get(i).getX() == cell.getX() && cellsA.get(i).getY() == cell.getY())
+                return false;
+            if(cellsB.get(i).getX() == cell.getX() && cellsB.get(i).getY() == cell.getY())
+                return false;
+        }
+        return true;
+    }
 
+    private void judge() {  // 判断两名玩家下一步操作是否合法
+        List<Cell> cellsA = playerA.getCells();
+        List<Cell> cellsB = playerB.getCells();
+
+        boolean validA, validB;
+        validA = check_valid(cellsA, cellsB);
+        validB = check_valid(cellsB, cellsA);
+
+        if(!validA || !validB) {
+            this.status = "finished";
+
+            if(!validA && !validB) {
+                this.loser = "all";
+            } else if(!validA) {
+                this.loser = "A";
+            } else {
+                this.loser = "B";
+            }
+        }
     }
 
     private void sendMove() {   // 向两个Client传递移动信息

@@ -99,6 +99,7 @@ public class WebSocketServer {
             resp1.put("event", "start_matching");
             resp1.put("opponent_username", playerB.getUsername());
             resp1.put("opponent_photo", playerB.getPhoto());
+            resp1.put("color", "蓝色");
             resp1.put("game", respGame);
             users.get(playerA.getId()).sendMessage(resp1.toJSONString());
 
@@ -106,6 +107,7 @@ public class WebSocketServer {
             resp2.put("event", "start_matching");
             resp2.put("opponent_username", playerA.getUsername());
             resp2.put("opponent_photo", playerA.getPhoto());
+            resp2.put("color", "红色");
             resp2.put("game", respGame);
             users.get(playerB.getId()).sendMessage(resp2.toJSONString());
 

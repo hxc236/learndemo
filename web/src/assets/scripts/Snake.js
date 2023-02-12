@@ -53,6 +53,10 @@ export class Snake extends AcGameObject {
         this.direction = d;
     }
 
+    set_eye_direction(d) {
+        this.eye_direction = d;
+    }
+
     next_step() {   //将蛇的状态变为走下一步
         const d = this.direction;
         this.next_cell = new Cell(this.cells[0].r + this.dr[d], this.cells[0].c + this.dc[d]);
@@ -66,10 +70,6 @@ export class Snake extends AcGameObject {
             this.cells[i] = JSON.parse(JSON.stringify(this.cells[i - 1]));  //这里要深复制，因为直接赋值传的都是引用，容易造成混乱
         }
 
-        if(!this.gamemap.check_valid(this.next_cell)) {     //撞上，蛇去世了
-            this.status = "dead";
-
-        }
     }
 
 
