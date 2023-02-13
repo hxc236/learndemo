@@ -12,7 +12,9 @@
     "bootstrap": "^5.2.3",
     "core-js": "^3.8.3",
     "jquery": "^3.6.3",
-    "vue": "^3.2.13",
+    "monaco-editor": "^0.35.0",
+    "monaco-editor-webpack-plugin": "^7.0.1",
+    "vue": "^3.2.47",
     "vue-router": "^4.0.3",
     "vue3-ace-editor": "^2.2.2",
     "vuex": "^4.0.0"

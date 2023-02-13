@@ -6,6 +6,7 @@ import RecordIndexView from '../views/record/RecordIndexView'
 import UserBotIndexView from '../views/user/bot/UserBotIndexView'
 import UserAccountLoginView from '../views/user/account/UserAccountLoginView'
 import UserAccountRegisterView from '@/views/user/account/UserAccountRegisterView'
+import TestIndexView from '@/views/test/TestIndexView';
 
 import store from '@/store'
 
@@ -71,6 +72,14 @@ const routes = [
     path: "/404/",
     name: "404",
     component: NotFoundView,
+    meta: {
+      requestAuth: false,
+    }
+  },
+  {
+    path: "/test/",
+    name: "test",
+    component: TestIndexView,
     meta: {
       requestAuth: false,
     }
