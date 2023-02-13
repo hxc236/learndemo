@@ -162,14 +162,14 @@ public class Game extends Thread {  // 有多个Client端时会有多局游戏�
         JSONObject resp = new JSONObject();
         resp.put("event", "result");
         resp.put("loser", loser);
-//        lock.lock();
-//        try {
-//            resp.put("a_direction", nextStepA);
-//            resp.put("b_direction", nextStepB);
-//            nextStepA = nextStepB = null;
-//        } finally {
-//            lock.unlock();
-//        }
+        lock.lock();
+        try {
+            resp.put("a_direction", nextStepA);
+            resp.put("b_direction", nextStepB);
+            nextStepA = nextStepB = null;
+        } finally {
+            lock.unlock();
+        }
         sendAllMessage(resp.toJSONString());
     }
 
