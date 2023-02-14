@@ -3,6 +3,7 @@ package com.lendemo.backend.consumer;
 import com.alibaba.fastjson2.JSONObject;
 import com.lendemo.backend.consumer.utils.Game;
 import com.lendemo.backend.consumer.utils.JwtAuthentication;
+import com.lendemo.backend.mapper.RecordMapper;
 import com.lendemo.backend.mapper.UserMapper;
 import com.lendemo.backend.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,8 @@ public class WebSocketServer {
     // 由于WebSocketServer不是SpringBoot中的单例模式，因此不能直接Autowired注入
     private static UserMapper userMapper;
 
+    public static RecordMapper recordMapper;
+
     private Game game = null;
 
 
@@ -39,6 +42,11 @@ public class WebSocketServer {
     @Autowired
     public void setUserMapper(UserMapper userMapper) {
         WebSocketServer.userMapper = userMapper;
+    }
+
+    @Autowired
+    public void setRecordMapper(RecordMapper recordMapper) {
+        WebSocketServer.recordMapper = recordMapper;
     }
 
     @OnOpen

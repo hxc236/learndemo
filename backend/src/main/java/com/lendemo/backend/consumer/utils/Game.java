@@ -2,8 +2,10 @@ package com.lendemo.backend.consumer.utils;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.lendemo.backend.consumer.WebSocketServer;
+import com.lendemo.backend.pojo.Record;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.locks.ReentrantLock;
@@ -158,6 +160,33 @@ public class Game extends Thread {  // 有多个Client端时会有多局游戏�
         WebSocketServer.users.get(playerB.getId()).sendMessage(message);
     }
 
+    private String getGamemapString() {
+        StringBuilder res = new StringBuilder();
+        for(int i = 0; i < rows; i ++ )
+            for(int j = 0; j < cols; j ++ )
+                res.append(gameMap[i][j]);
+        return res.toString();
+    }
+
+    private void saveToDatabase() {
+        Record record = new Record(
+                null,
+                playerA.getId(),
+                playerA.getSx(),
+                playerA.getSy(),
+                playerB.getId(),
+                playerB.getSx(),
+                playerB.getSy(),
+                playerA.getStepsString(),
+                playerB.getStepsString(),
+                getGamemapString(),
+                loser,
+                new Date()
+        );
+
+        WebSocketServer.recordMapper.insert(record);
+    }
+
     private void sendResult() { // 向两个Client公布结果
         JSONObject resp = new JSONObject();
         resp.put("event", "result");
@@ -170,6 +199,7 @@ public class Game extends Thread {  // 有多个Client端时会有多局游戏�
         } finally {
             lock.unlock();
         }
+        saveToDatabase();
         sendAllMessage(resp.toJSONString());
     }
 
