@@ -138,6 +138,18 @@ select * from user where id=1; //查询符合条件的数据
 delete from user where id=1; //删除符合条件的数据
 ```
 
+## 学习开发过程中的疑问
+
+1、WebSocket协议和http协议区别，工作原理？
+
+2、Bean的含义？@Autowired 含义？
+用法及个人理解：大概是需要用到啥就在这个类前加个@Configuration，然后用到什么方法就在该方法前面加一个@Bean，然后根据<类型>对应一个@Autowired，被@Autowired修饰的变量会直接用@Bean修饰的方法中类型匹配的注入到该变量中;
+@Autowired写在set()方法上，在spring会根据方法的参数类型从ioc容器中找到该类型的Bean对象注入到方法的形参中，被@Autowired修饰的方法一定会执行, 所以一般使用在set方法中, 普通方法不用。
+
+3、如何把URL写到配置文件里？（需要浅学一下cloud）
+
+4、openfegin负载均衡？
+
 
 ## 后传
 
