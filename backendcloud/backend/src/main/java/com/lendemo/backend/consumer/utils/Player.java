@@ -13,6 +13,8 @@ import java.util.List;
 @AllArgsConstructor
 public class Player {
     private Integer id;
+    private Integer botId;  // -1表示亲自操作
+    private String botCode;
     private Integer sx;
     private Integer sy;
     private ArrayList<Integer> steps;       // 储存Player每一步走的方向

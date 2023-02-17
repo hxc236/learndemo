@@ -19,7 +19,7 @@ export default {
     },
     setup() {
         localStorage.setItem("current_page", "pk_index");
-    
+        
         const store = useStore();
         const socketUrl = `ws://127.0.0.1:1644/websocket/${store.state.user.token}/`;
         
@@ -78,6 +78,7 @@ export default {
 
         onUnmounted(() => {
             socket.close();
+            store.commit("updateLoser", "none");
         });
     }
 }

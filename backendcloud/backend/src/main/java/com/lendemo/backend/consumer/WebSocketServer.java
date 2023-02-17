@@ -4,8 +4,10 @@ import com.alibaba.fastjson2.JSONObject;
 import com.lendemo.backend.config.RestTemplateConfig;
 import com.lendemo.backend.consumer.utils.Game;
 import com.lendemo.backend.consumer.utils.JwtAuthentication;
+import com.lendemo.backend.mapper.BotMapper;
 import com.lendemo.backend.mapper.RecordMapper;
 import com.lendemo.backend.mapper.UserMapper;
+import com.lendemo.backend.pojo.Bot;
 import com.lendemo.backend.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -32,8 +34,9 @@ public class WebSocketServer {
     // 由于WebSocketServer不是SpringBoot中的单例模式，因此不能直接Autowired注入
     private static UserMapper userMapper;
     public static RecordMapper recordMapper;
-    private static RestTemplate restTemplate;
-    private Game game = null;
+    private static BotMapper botMapper;
+    public static RestTemplate restTemplate;
+    public Game game = null;
     private final static String addPlayerUrl = "http://127.0.0.1:1645/player/add/";
     private final static String removePlayerUrl = "http://127.0.0.1:1645/player/remove/";
 
@@ -46,6 +49,10 @@ public class WebSocketServer {
     @Autowired
     public void setRecordMapper(RecordMapper recordMapper) {
         WebSocketServer.recordMapper = recordMapper;
+    }
+    @Autowired
+    public void setBotMapper(BotMapper botMapper) {
+        WebSocketServer.botMapper = botMapper;
     }
     @Autowired
     public void setRestTemplate(RestTemplate restTemplate) {
@@ -78,11 +85,22 @@ public class WebSocketServer {
         }
     }
 
-    public static void startGame(Integer aId, Integer bId) {
+    public static void startGame(Integer aId, Integer aBotId, Integer bId, Integer bBotId) {
         User playerA = userMapper.selectById(aId);
         User playerB = userMapper.selectById(bId);
+        Bot botA = botMapper.selectById(aBotId);
+        Bot botB = botMapper.selectById(bBotId);
 
-        Game game = new Game(13, 14, 20, playerA.getId(), playerB.getId());
+
+        Game game = new Game(
+                13,
+                14,
+                20,
+                playerA.getId(),
+                botA,
+                playerB.getId(),
+                botB
+        );
         game.createMap();
         if(users.get(playerA.getId()) != null)
             users.get(playerA.getId()).game = game;
@@ -142,9 +160,11 @@ public class WebSocketServer {
 
     private void move(int direction) {
         if(game.getPlayerA().getId().equals(user.getId())) {   // 判断是哪名玩家
-            game.setNextStepA(direction);
+            if(game.getPlayerA().getBotId().equals(-1))     // 玩家手动操作
+                game.setNextStepA(direction);
         } else if(game.getPlayerB().getId().equals(user.getId())) {
-            game.setNextStepB(direction);
+            if(game.getPlayerB().getBotId().equals(-1))
+                game.setNextStepB(direction);
         }
     }
 

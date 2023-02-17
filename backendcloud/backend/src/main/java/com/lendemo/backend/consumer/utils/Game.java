@@ -2,7 +2,10 @@ package com.lendemo.backend.consumer.utils;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.lendemo.backend.consumer.WebSocketServer;
+import com.lendemo.backend.pojo.Bot;
 import com.lendemo.backend.pojo.Record;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,7 +14,6 @@ import java.util.Random;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class Game extends Thread {  // 有多个Client端时会有多局游戏，因此Game需要多线程操作，要继承自Thread
-    private static final int TIMELIMIT = 5000;
     private final Integer rows;
     private final Integer cols;
     private final Integer inner_walls_count;
@@ -26,20 +28,42 @@ public class Game extends Thread {  // 有多个Client端时会有多局游戏�
     private Integer nextStepB = null;
 
     private final Integer drawTime = 200;   // 前端绘制一格需要多少毫秒
-    private ReentrantLock lock = new ReentrantLock();       // 引入用来控制互斥操作的“锁”
+    private final ReentrantLock lock = new ReentrantLock();       // 引入用来控制互斥操作的“锁”
+
+    private final static String addBotUrl = "http://127.0.0.1:1646/bot/add/";
 
     private String status = "playing";      // playing -> finished
 
     private String loser = "";    // all -> 平局, A: A输, B: B输
 
 
-    public Game(Integer rows, Integer cols, Integer inner_walls_count, Integer idA, Integer idB) {
+    public Game(
+            Integer rows,
+            Integer cols,
+            Integer inner_walls_count,
+            Integer idA,
+            Bot botA,
+            Integer idB,
+            Bot botB
+    ) {
         this.rows = rows;
         this.cols = cols;
         this.inner_walls_count = inner_walls_count;
-        gameMap = new int[rows][cols];
-        playerA = new Player(idA, rows - 2, 1, new ArrayList<>());
-        playerB = new Player(idB, 1, cols - 2, new ArrayList<>());
+        this.gameMap = new int[rows][cols];
+
+        Integer botIdA = -1, botIdB = -1;
+        String botCodeA = "", botCodeB = "";
+        if(botA != null) {
+            botIdA = botA.getId();
+            botCodeA = botA.getContent();
+        }
+        if(botB != null) {
+            botIdB = botB.getId();
+            botCodeB = botB.getContent();
+        }
+
+        playerA = new Player(idA, botIdA, botCodeA, rows - 2, 1, new ArrayList<>());
+        playerB = new Player(idB, botIdB, botCodeB, 1, cols - 2, new ArrayList<>());
     }
 
     public int[][] getGameMap() {
@@ -128,12 +152,54 @@ public class Game extends Thread {  // 有多个Client端时会有多局游戏�
         }
     }
 
+    private String getBotCodeInput(Player player) { // 将当前的局部信息编码成字符串
+        // map#my_sx#my_sy#(my_steps)#your_sx#your_sy#(your_steps)
+        StringBuilder input = new StringBuilder();
+        Player opponentPlayer;
+        if(player.getId().equals(playerA.getId()))
+            opponentPlayer = playerB;
+        else
+            opponentPlayer = playerA;
+        input.append(getGamemapString())
+                .append("#")
+                .append(player.getSx())
+                .append("#")
+                .append(player.getSy())
+                .append("#(")
+                .append(player.getSteps())
+                .append(")#")
+                .append(opponentPlayer.getSx())
+                .append("#")
+                .append(opponentPlayer.getSy())
+                .append("#(")
+                .append(opponentPlayer.getSteps())
+                .append(")");
+        return input.toString();
+    }
+
+    private void sendBotCode(Player player) {
+        if(player.getBotId().equals(-1)) return;
+        MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
+        data.add("user_id", player.getId().toString());
+        data.add("bot_code", player.getBotCode());
+        data.add("input", getBotCodeInput(player));
+
+        WebSocketServer.restTemplate.postForObject(addBotUrl, data, String.class);
+    }
+
     private boolean nextStep() {    // 等待两名玩家的下一步操作
         try {
             Thread.sleep(200);     // 在前端绘制一格的200ms内，防止接受过多的输入
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+
+        // 分别判断两名玩家是AI还是人
+        sendBotCode(playerA);
+        sendBotCode(playerB);
+
+
+
         for(int i = 0; i < 50; i ++ )
         {
             try {
