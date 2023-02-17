@@ -120,12 +120,13 @@ public class WebSocketServer {
 
     }
 
-    private void startMatching() {      // 开始匹配
+    private void startMatching(Integer botId) {      // 开始匹配
         System.out.println("startMatching!");
         // 向 Matching pool发送请求
         MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
         data.add("user_id", this.user.getId().toString());
         data.add("rating", this.user.getRating().toString());
+        data.add("bot_id", botId.toString());
         restTemplate.postForObject(addPlayerUrl, data, String.class);   // Java的反射机制，返回值的class
 
     }
@@ -154,7 +155,7 @@ public class WebSocketServer {
         JSONObject data = JSONObject.parseObject(message);
         String event = data.getString("event");
         if("start_matching".equals(event)) {
-            startMatching();
+            startMatching(Integer.parseInt(data.getString("bot_id")));
         } else if("stop_matching".equals(event)) {
             stopMatching();
         } else if("move".equals(event)) {

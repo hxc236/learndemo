@@ -59,11 +59,7 @@ export default {
                     console.log(data);
                     const game = store.state.pk.gameObject;
                     const [snake0, snake1] = game.snakes;
-                    // if(data.a_direction !== null)
-                    //     snake0.set_eye_direction(data.a_direction);
-                    // if(data.b_direction !== null)
-                    //     snake1.set_eye_direction(data.b_direction);
-                    
+
                     if(data.loser === "all" || data.loser === "A") {
                         snake0.status = "dead";
                     }
