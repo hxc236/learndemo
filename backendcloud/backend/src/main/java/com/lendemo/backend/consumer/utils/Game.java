@@ -152,7 +152,7 @@ public class Game extends Thread {  // 有多个Client端时会有多局游戏�
         }
     }
 
-    private String getBotCodeInput(Player player) { // 将当前的局部信息编码成字符串
+    private String getBotCodeInput(Player player) { // 将当前的局面信息编码成字符串
         // map#my_sx#my_sy#(my_steps)#your_sx#your_sy#(your_steps)
         StringBuilder input = new StringBuilder();
         Player opponentPlayer;
@@ -160,21 +160,14 @@ public class Game extends Thread {  // 有多个Client端时会有多局游戏�
             opponentPlayer = playerB;
         else
             opponentPlayer = playerA;
-        input.append(getGamemapString())
-                .append("#")
-                .append(player.getSx())
-                .append("#")
-                .append(player.getSy())
-                .append("#(")
-                .append(player.getSteps())
-                .append(")#")
-                .append(opponentPlayer.getSx())
-                .append("#")
-                .append(opponentPlayer.getSy())
-                .append("#(")
-                .append(opponentPlayer.getSteps())
-                .append(")");
-        return input.toString();
+
+        return getGamemapString() + "#"
+                + player.getSx().toString() + "#"
+                + player.getSy().toString() + "#("
+                + player.getStepsString() + ")#"
+                + opponentPlayer.getSx().toString() + "#"
+                + opponentPlayer.getSy().toString() + "#("
+                + opponentPlayer.getStepsString() + ")";
     }
 
     private void sendBotCode(Player player) {
