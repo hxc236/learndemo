@@ -32,7 +32,7 @@ public class WebSocketServer {
     private Session session = null;
 
     // 由于WebSocketServer不是SpringBoot中的单例模式，因此不能直接Autowired注入
-    private static UserMapper userMapper;
+    public static UserMapper userMapper;
     public static RecordMapper recordMapper;
     private static BotMapper botMapper;
     public static RestTemplate restTemplate;
