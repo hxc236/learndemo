@@ -39,22 +39,49 @@ export class GameMap extends AcGameObject {
     }
 
     add_listening_events() {        //检测按键等
-        this.ctx.canvas.focus();   //聚焦canvas
 
-        this.ctx.canvas.addEventListener("keydown", e => {  //绑定一个keydown事件
-            let d = -1;     // 前端发送移动信息
-            if (e.key === 'w') d = 0;
-            else if (e.key === 'd') d = 1;
-            else if (e.key === 's') d = 2;
-            else if (e.key === 'a') d = 3;
+        if (this.store.state.record.is_record) {
+            let k = 0;
+            const a_steps = this.store.state.record.a_steps;
+            const b_steps = this.store.state.record.b_steps;
+            const loser = this.store.state.record.record_loser;
+            const [snake0, snake1] = this.snakes;
+            const interval_id = setInterval(() => {
+                if(k >= a_steps.length - 1) {  // 每300ms判断一下蛇有没有走完
+                    if(loser === "all" || loser === "A") {
+                        snake0.status = "dead";
+                    }
+                    if(loser === "all" || loser === "B") {
+                        snake1.status = "dead"; 
+                    }
+                    clearInterval(interval_id);
+                } else {
+                    snake0.set_direction(parseInt(a_steps[k]));
+                    snake1.set_direction(parseInt(b_steps[k]));
 
-            if (d >= 0) {
-                this.store.state.pk.socket.send(JSON.stringify({
-                    event: "move",
-                    direction: d,
-                }));
-            }
-        });
+                }  
+                k ++ ;
+            }, 300);       // 每 多长时间 执行一次
+           
+        } else {
+            this.ctx.canvas.focus();   //聚焦canvas
+
+            this.ctx.canvas.addEventListener("keydown", e => {  //绑定一个keydown事件
+                let d = -1;     // 前端发送移动信息
+                if (e.key === 'w') d = 0;
+                else if (e.key === 'd') d = 1;
+                else if (e.key === 's') d = 2;
+                else if (e.key === 'a') d = 3;
+
+                if (d >= 0) {
+                    this.store.state.pk.socket.send(JSON.stringify({
+                        event: "move",
+                        direction: d,
+                    }));
+                }
+            });
+        }
+
     }
 
     start() {
