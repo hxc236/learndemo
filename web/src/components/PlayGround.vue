@@ -1,16 +1,41 @@
 <template>
     <div class="playground">
         <GameMap />
+        <div class="col-3">
+            <ContentField>
+                我方蛇颜色：{{ my_color }}
+            </ContentField>
+        </div>
     </div>
 </template>
 
 <script>
 import GameMap from './GameMap.vue';
+import ContentField from '@/components/ContentField.vue'
+import { useStore } from 'vuex';
+import { ref } from 'vue';
 
 export default {
     components: {
         GameMap,
-    }
+        ContentField,
+    },
+    setup() {
+        let my_color = ref("");
+        const store = useStore();
+
+        if (parseInt(store.state.user.id) === store.state.pk.a_id) {
+            my_color.value = "蓝色";
+        } else {
+            my_color.value = "红色";
+        }
+
+            return {
+                my_color,
+            }
+    },
+
+
 }
 </script>
 
