@@ -30,9 +30,9 @@ export default {
             my_color.value = "红色";
         }
 
-            return {
-                my_color,
-            }
+        return {
+            my_color,
+        }
     },
 
 

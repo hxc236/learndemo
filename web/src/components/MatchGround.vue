@@ -18,6 +18,9 @@
                         </option>
                     </select>
                 </div>
+                <div class="online_count">
+                    当前在线人数: {{ online_player_count }}
+                </div>
             </div>
             <div class="col-4">
                 <div class="user-photo">
@@ -48,7 +51,7 @@ export default {
         let match_btn_info = ref("开始匹配");
         let bots = ref([]);
         let select_bot = ref("-1");
-
+        let online_player_count = ref("");
 
         const click_match_btn = () => {
             if (match_btn_info.value === "开始匹配") {
@@ -64,6 +67,23 @@ export default {
                 }));
             }
         }
+
+        const update_online_count = () => {
+            $.ajax({
+                url: "http://127.0.0.1:1644/pk/getonlineplayernum/",
+                type: "get",
+                headers: {
+                    Authorization: "Bearer " + store.state.user.token,
+                },
+                success(resp) {
+                    console.log(resp);
+                    online_player_count.value = resp.online_count;
+                }
+            })
+            // requestAnimationFrame(update_online_count);
+        }
+
+        update_online_count();
 
         const refresh_bots = () => {
             $.ajax({
@@ -85,6 +105,7 @@ export default {
             click_match_btn,
             bots,           //一定记得返回
             select_bot,
+            online_player_count,
         }
     }
 
@@ -128,6 +149,13 @@ div.user-select-bot {
 div.user-select-bot > select {
     width: 60%;
     margin: 0 auto;
+}
+
+div.online_count {
+    text-align: center;
+    color: white;
+    padding-top: 20%;
+    font-size: large;
 }
 </style>
 
